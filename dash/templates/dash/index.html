@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-lg">
+                <h1>IoT Hackathon Dashboard</h1>
+            </div>
+        </div>
+        <div class="row" style="margin-top:30px;">
+            <div class="col">
+                <h2>Add a Project</h2>
+
+                <form action="/add_proj" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="proj_name">Project Name:</label>
+                        <input class="form-control" id="proj_name" type="text" name="proj_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="new_ep">Lambda URL:</label>
+                        <input class="form-control" id="new_ep" type="text" name="new_ep">
+                    </div>
+                    <input type="submit" value="Create New Connection">
+                </form>
+            </div>
+            <div class="col">
+                <h2>Current Bound Project</h2>
+                {% if bound_ep == '' %}
+                <h3 style="color: red;">Button Not Bound!</h3>
+                {% else %}
+                <h3 style="color: green;">{{bound_ep}}</h3>
+                {% endif %}
+            </div>
+        </div>
+        <div class="all-proj" style="margin-top: 40px;">
+            <h2>Projects</h2>
+            <table>
+                <tr>
+                    <th>Project Name</th>
+                    <th>Lambda Function</th>
+                    <th>Actions</th>
+                </tr>
+                {% for project in projects %}
+                <tr>
+                    <td>{{project.name}}</td>
+                    <td>{{project.lambda_ep}}</td>
+                    <td><a href="/test/{{project.id}}">Test</a> | <a href="/bind/{{project.id}}">Bind to Button</a> |
+                        <a href="/delete/{{project.id}}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
