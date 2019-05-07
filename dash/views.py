@@ -6,6 +6,7 @@ from urllib import request as ex_request
 from datetime import datetime
 from .models import *
 
+BUTTON_MAC = "38:f7:3d:74:cd:60"
 time_last_sent = None
 current_lambda = ""
 
@@ -38,26 +39,30 @@ def delete_ep(request, p_id):
     Project.objects.get(id = p_id).delete()
     return redirect('/')
 
+
+
 ################## Utilities ##################
 
-# Starts separate thread to listen on network
+# Starts separate thread to listen on network, while not blocking requests
 def run_listener():
     print("Waiting for Signal")
     sniff(prn=arp_monitor_callback, filter="arp", store=0)
 
-# listener, looking for mac address of button
+# listener, looking for mac address of specific Dash button
+# Easiest way to get MAC is to use WireShark and look for Amazon in the name of Source
 def arp_monitor_callback(pkt):
     if ARP in pkt and pkt[ARP].op in (1,2):
-        if pkt.sprintf("%ARP.hwsrc%") == "38:f7:3d:74:cd:60":
+        if pkt.sprintf("%ARP.hwsrc%") == BUTTON_MAC:
             if time_last_sent == None:
                 call_lambda() 
-                return "First one worked"
+                return "Initial contact"
+            # Debouncing in order to avoid accidental Spam - Button sometimes pings network twice
             time_since = (datetime.now() - time_last_sent).total_seconds()
             if int(time_since) > 5:
                 call_lambda()
                 return "WORKED"
             else:
-                print("Too many")
+                print("Too many requests")
 
 # triggers the lamda function when called by the listener
 def call_lambda():
@@ -69,7 +74,7 @@ def call_lambda():
         try:
             ex_request.urlopen(current_lambda)
         except:
-            print("Double check your url")
+            print("Lamba Error")
     else:
         print("Need to assign Lambda first. Add a team")
 

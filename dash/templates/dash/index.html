@@ -41,13 +41,33 @@
                 </form>
             </div>
             <div class="col">
-                <h2>Current Bound Project</h2>
-                {% if bound_ep == '' %}
-                <h3 style="color: red;">Button Not Bound!</h3>
-                {% else %}
-                <h3 style="color: green;">{{bound_ep}}</h3>
-                {% endif %}
+                <!-- <form action="/upload_pkg" method="post">
+                    {% csrf_token %}
+                    <h3>Or Upload a Deployable Zip</h3>
+                    <div class="form-group">
+                        <label for="new_ep">Package Zip:</label>
+                        <input class="form-control-file" id="new_ep" type="file" name="new_ep">
+                    </div>
+                    <div class="form-group">
+                        <label for="runtime">Example select</label>
+                        <select class="form-control" id="runtime" name="runtime">
+                            <option>Python</option>
+                            <option>Node</option>
+                        </select>
+                    </div>
+                    <input type="submit" value="Upload Package">
+                </form> -->
             </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+            <h2>Current Bound Project</h2>
+        </div>
+        <div class="row">
+            {% if bound_ep == '' %}
+            <h3 style="color: red;">Button Not Bound!</h3>
+            {% else %}
+            <h3 style="color: green;">{{bound_ep}}</h3>
+            {% endif %}
         </div>
         <div class="all-proj" style="margin-top: 40px;">
             <h2>Projects</h2>
